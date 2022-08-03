@@ -1,9 +1,9 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.engine import Result
-import api.schemas.user as user_schema
-import api.models.user as user_model
-import api.models.item as item_model
+import schemas.user as user_schema
+import models.user as user_model
+import models.item as item_model
 
 
 async def get_user(db: AsyncSession, user_id: int):

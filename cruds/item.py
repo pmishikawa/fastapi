@@ -4,7 +4,7 @@ from sqlalchemy.sql import select
 from sqlalchemy.engine import Result
 
 # import api.schemas.item as item_schema
-import api.models.item as item_model
+import models.item as item_model
 
 
 async def get_items(

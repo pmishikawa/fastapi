@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.engine import Result
-import api.schemas.job_primera as job_primera_schema
-import api.models.job_primera as job_primera_model
+import schemas.job_primera as job_primera_schema
+import models.job_primera as job_primera_model
 
 
 async def get_job_primera(db: AsyncSession, job_id: int):

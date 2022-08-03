@@ -1,4 +1,4 @@
-from api.database import Base
+from database import Base
 
 from .item import Item
 from .user import User

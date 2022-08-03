@@ -1,5 +1,5 @@
 from sqlalchemy import Boolean, Column, Integer, String, DateTime, func
-from api.database import Base
+from database import Base
 
 
 class JobPrimera(Base):
