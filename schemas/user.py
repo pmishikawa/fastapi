@@ -4,7 +4,7 @@ from typing import Union, Optional
 
 
 class UserBase(BaseModel):
-    email: Optional[str] = ""
+    email: Optional[str] = "test@example.com"
 
 
 class UserCreate(UserBase):

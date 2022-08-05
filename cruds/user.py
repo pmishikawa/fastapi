@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.engine import Result
+from fastapi.encoders import jsonable_encoder
 from typing import List, Tuple, Optional
 import schemas.user as user_schema
 import schemas.item as item_schema
@@ -121,16 +122,13 @@ async def get_user(db: AsyncSession, user_id: int):
     return user[0] if user is not None else None
 
 
-async def get_user_by_email(db: AsyncSession, email: str) -> user_model.User:
+async def get_user_by_email(db: AsyncSession, email: str):
 
     result: Result = await db.execute(
         select(
             user_model.User.id,
-            user_model.User.email,
-            user_model.User.is_active,
-            item_model.Item,
         )
-        .select_from(user_model)
+        .select_from(user_model.User)
         .where(user_model.User.email == email)
     )
 
@@ -145,20 +143,25 @@ async def get_user_by_email(db: AsyncSession, email: str) -> user_model.User:
     # )
 
 
-def create_user(db: AsyncSession, user: user_schema.UserCreate):
+async def create_user(db: AsyncSession, user: user_schema.UserCreate):
     fake_hashed_password = user.password + "notreallyhashed"
+    # user_data = jsonable_encoder(user)
+
     db_user = user_model.User(email=user.email, hashed_password=fake_hashed_password)
     print("---------------------------test")
-    print(db_user)
+    # print(type(user_data))
+    print(db_user.email)
     print("---------------------------test")
 
     db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
+    await db.commit()
+    await db.refresh(db_user)
     return db_user
 
 
-def create_user_item(db: AsyncSession, item: item_schema.ItemCreate, user_id: int):
+async def create_user_item(
+    db: AsyncSession, item: item_schema.ItemCreate, user_id: int
+):
 
     print("---------------------------1")
     print(user_id)
