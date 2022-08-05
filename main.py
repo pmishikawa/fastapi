@@ -1,13 +1,19 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import items, users, job_primera
+from routers import items, users, job_primera, task, done
 
-app = FastAPI()
+app = FastAPI(
+    title="mm-jdf-editor API",
+    description="プレスメディア学習用",
+    version="0.1.0",
+    contact={"name": "プレスメディア", "url": "https://pressmedia.co.jp/contents/contact/"},
+)
 
 
 app.include_router(items.router)
 app.include_router(users.router)
 app.include_router(job_primera.router)
+
 
 origins = ["http://localhost:3000"]
 app.add_middleware(

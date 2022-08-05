@@ -29,6 +29,13 @@ class JobPrimeraCreate(JobPrimeraBase):
     pass
 
 
+class JobPrimeraCreateResponse(JobPrimeraCreate):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+
 class JobPrimera(JobPrimeraBase):
     created_at: datetime
     updated_at: datetime

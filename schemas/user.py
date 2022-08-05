@@ -1,9 +1,10 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from schemas.item import Item
+from typing import Union, Optional
 
 
 class UserBase(BaseModel):
-    email: str
+    email: Optional[str] = ""
 
 
 class UserCreate(UserBase):
@@ -11,8 +12,8 @@ class UserCreate(UserBase):
 
 
 class User(UserBase):
-    id: int
-    is_active: bool
+    id: Union[int, None] = None
+    is_active: Union[bool, None] = Field(None, example="True", description="フラグ")
     items: list[Item] = []
 
     class Config:
