@@ -1,5 +1,8 @@
-from sqlalchemy import Boolean, Column, Integer, String, DateTime, func
+from sqlalchemy import Boolean, Column, Integer, String, DateTime
 from database import Base
+from datetime import datetime, timedelta, timezone
+
+JST = timezone(timedelta(hours=+9), "JST")
 
 
 class JobPrimera(Base):
@@ -26,5 +29,5 @@ class JobPrimera(Base):
     signature_cutting_bottom = Column(Integer, default=0)
     signature_edge = Column(Integer, default=0)
     signature_thickness = Column(Integer, default=0)
-    created_at = Column(DateTime, server_default=func.now())
-    updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+    created_at = Column(DateTime, nullable=False, default=datetime.now(JST))
+    updated_at = Column(DateTime, nullable=False, default=datetime.now(JST))

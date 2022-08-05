@@ -1,11 +1,19 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.engine import Result
+from typing import Optional
+from datetime import datetime, timedelta, timezone
+from fastapi.encoders import jsonable_encoder
 import schemas.job_primera as job_primera_schema
 import models.job_primera as job_primera_model
 
 
-async def get_job(db: AsyncSession, job_id: int):
+JST = timezone(timedelta(hours=+9), "JST")
+
+
+async def get_job(
+    db: AsyncSession, job_id: int
+) -> Optional[job_primera_model.JobPrimera]:
     result: Result = await db.execute(
         select(
             job_primera_model.JobPrimera.id,
@@ -40,14 +48,6 @@ async def get_job(db: AsyncSession, job_id: int):
     return result.first()
 
 
-async def get_user_by_email(db: AsyncSession, email: str):
-    return (
-        await db.query(job_primera_model.User)
-        .filter(job_primera_model.User.email == email)
-        .filter()
-    )
-
-
 async def get_jobs(db: AsyncSession, skip: int = 0, limit: int = 100):
 
     result: Result = await db.execute(
@@ -78,17 +78,60 @@ async def get_jobs(db: AsyncSession, skip: int = 0, limit: int = 100):
         .offset(skip)
         .limit(limit)
     )
-    return result.fetchall()
+    return result.all()
 
 
 async def create_job(
     db: AsyncSession, job: job_primera_schema.JobPrimeraCreate
 ) -> job_primera_model.JobPrimera:
     print("------------------------===")
-    dir(job)
 
-    job_data = job_primera_model.JobPrimera(**job.dict())
-    db.add(job_data)
-    db.commit()
-    db.refresh(job_data)
+    print(type(jsonable_encoder(job)))
+    print(jsonable_encoder(job))
+    job_data = {**job.dict()}
+    print("------------------------===")
+    print(type(job_data))
+    print(job_data)
+    db_job = job_primera_model.JobPrimera(**job.dict())
+    # db_job = job_primera_model.JobPrimera(jsonable_encoder(job))
+    db.add(db_job)
+    print("------------------------===")
+    await db.commit()
+    await db.refresh(job_data)
     return job_data
+
+
+async def update_job(
+    db: AsyncSession,
+    job_create: job_primera_schema.JobPrimeraCreate,
+    original: job_primera_model.JobPrimera,
+) -> job_primera_model.JobPrimera:
+    original.data_job = job_create.data_job
+    original.title = job_create.title
+    original.copies = job_create.copies
+    original.finished_top_to_bottom = job_create.finished_top_to_bottom
+    original.finished_edge = job_create.finished_edge
+    original.has_cut = job_create.has_cut
+    original.cutting_top = job_create.cutting_top
+    original.stitches = job_create.stitches
+    original.batches = job_create.batches
+    original.cover_cutting_top = job_create.cover_cutting_top
+    original.cover_edge = job_create.cover_edge
+    original.cover_thickness = job_create.cover_thickness
+    original.signature_pages = job_create.signature_pages
+    original.signature_top_to_bottom = job_create.signature_top_to_bottom
+    original.signature_cutting_top = job_create.signature_cutting_top
+    original.signature_cutting_bottom = job_create.signature_cutting_bottom
+    original.signature_edge = job_create.signature_edge
+    original.signature_thickness = job_create.signature_thickness
+    original.updated_at = datetime.now(JST)
+
+    db.add(original)
+    await db.commit()
+    await db.refresh(original)
+    return original
+
+
+async def delete_user(db: AsyncSession, original: job_primera_model.JobPrimera) -> None:
+    await db.delete(original)
+    await db.commit()

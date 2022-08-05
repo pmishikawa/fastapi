@@ -24,17 +24,31 @@ async def get_job_primera(job_id: int, db: AsyncSession = Depends(get_db)):
 @router.post(
     "/primera_jobs/", response_model=job_primera_schema.JobPrimeraCreateResponse
 )
-def create_primera_job(
+async def create_primera_job(
     job_body: job_primera_schema.JobPrimeraCreate, db: AsyncSession = Depends(get_db)
 ):
-    # print("=======================")
-    # print(type(job_body))
-    # print("=======================")
-    # dir(job_body)
-    # print("=======================")
+    return await job_primera_crud.create_job(db, job_body)
 
-    # result_id = await job_primera_crud.get_job(db, id=job_primera_schema.id)
-    # if result_id:
-    #    raise HTTPException(status_code=400, detail="Job already registered")
-    print("=======================")
-    return job_primera_crud.create_job(db=db, job=job_body)
+
+@router.put(
+    "/primera_jobs/{job_id}", response_model=job_primera_schema.JobPrimeraCreateResponse
+)
+async def update_user(
+    job_id: int,
+    job_body: job_primera_schema.JobPrimeraCreate,
+    db: AsyncSession = Depends(get_db),
+):
+    job = await job_primera_schema.get_user(db, job_id=job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Primera job not found")
+
+    return await job_primera_crud.update_user(db, job_body, original=job)
+
+
+@router.delete("/primera_jobs/{job_id}", response_model=None)
+async def delete_user(job_id: int, db: AsyncSession = Depends(get_db)):
+    job = await job_primera_crud.get_jobs(db, job_id=job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Primera job not found")
+
+    return await job_primera_crud.delete_user(db, original=job)

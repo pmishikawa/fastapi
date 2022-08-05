@@ -7,6 +7,7 @@ class JobPrimeraBase(BaseModel):
     data_job: datetime
     title: Union[str, None] = None
     copies: Union[int, None] = None
+    speed: Union[int, None] = None
     finished_top_to_bottom: Union[int, None] = None
     finished_edge: Union[int, None] = None
     has_cut: bool = True
@@ -26,7 +27,7 @@ class JobPrimeraBase(BaseModel):
 
 
 class JobPrimeraCreate(JobPrimeraBase):
-    pass
+    updated_at: datetime
 
 
 class JobPrimeraCreateResponse(JobPrimeraCreate):
