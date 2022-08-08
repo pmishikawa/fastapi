@@ -6,7 +6,7 @@ JST = timezone(timedelta(hours=+9), "JST")
 
 
 class JobPrimeraBase(BaseModel):
-    data_job: datetime
+    date_job: datetime
     title: Union[str, None] = None
     copies: Union[int, None] = None
     speed: Union[int, None] = None
@@ -45,6 +45,7 @@ class JobPrimeraCreateResponse(JobPrimeraCreate):
 
 
 class JobPrimera(JobPrimeraBase):
+    id: int
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 

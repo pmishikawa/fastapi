@@ -1,7 +1,8 @@
-from sqlalchemy import Boolean, Column, Integer, String, DateTime
+from sqlalchemy import Boolean, Column, Integer, String
 from sqlalchemy.types import TIMESTAMP
-from database import Base
 from datetime import datetime, timedelta, timezone
+from database import Base
+
 
 JST = timezone(timedelta(hours=+9), "JST")
 
@@ -10,7 +11,7 @@ class JobPrimera(Base):
     __tablename__ = "job_primera"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    data_job = Column(type_=TIMESTAMP(timezone=True))
+    date_job = Column(type_=TIMESTAMP(timezone=True))
     title = Column(String(255), default="")
     copies = Column(Integer, default=0)
     speed = Column(Integer, default=0)

@@ -38,17 +38,17 @@ async def update_user(
     job_body: job_primera_schema.JobPrimeraCreate,
     db: AsyncSession = Depends(get_db),
 ):
-    job = await job_primera_schema.get_user(db, job_id=job_id)
+    job = await job_primera_crud.get_job(db, job_id=job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Primera job not found")
 
-    return await job_primera_crud.update_user(db, job_body, original=job)
+    return await job_primera_crud.update_job(db, job_body, original=job)
 
 
 @router.delete("/primera_jobs/{job_id}", response_model=None)
 async def delete_user(job_id: int, db: AsyncSession = Depends(get_db)):
-    job = await job_primera_crud.get_jobs(db, job_id=job_id)
+    job = await job_primera_crud.get_job(db, job_id=job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Primera job not found")
 
-    return await job_primera_crud.delete_user(db, original=job)
+    return await job_primera_crud.delete_job(db, original=job)

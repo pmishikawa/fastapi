@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import items, users, job_primera
+from routers import job_primera, job_alegro_line
 
 app = FastAPI(
     title="mm-jdf-editor API",
@@ -10,11 +10,8 @@ app = FastAPI(
 )
 
 
-app.include_router(items.router)
-app.include_router(users.router)
 app.include_router(job_primera.router)
-
-
+app.include_router(job_alegro_line.router)
 origins = ["http://localhost:3000"]
 app.add_middleware(
     CORSMiddleware,

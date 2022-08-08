@@ -10,7 +10,15 @@ async def get_task(db: AsyncSession, task_id: int) -> Optional[task_model.Task]:
     result: Result = await db.execute(
         select(task_model.Task).filter(task_model.Task.id == task_id)
     )
-    task: Optional[Tuple[task_model.Task]] = result.first()
+    test = result.first()
+    task: Optional[Tuple[task_model.Task]] = test
+
+    print("=============================")
+    print(result)
+    print(type(result))
+    print("=============================")
+    print(task)
+    print("=============================")
     return task[0] if task is not None else None  # 要素が一つであってもtupleで返却されるので１つ目の要素を取り出す
 
 
