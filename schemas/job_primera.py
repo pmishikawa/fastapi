@@ -1,6 +1,8 @@
-from pydantic import BaseModel
-from datetime import datetime
-from typing import Union
+from pydantic import BaseModel, validator
+from datetime import datetime, timedelta, timezone
+from typing import Union, Optional
+
+JST = timezone(timedelta(hours=+9), "JST")
 
 
 class JobPrimeraBase(BaseModel):
@@ -27,7 +29,12 @@ class JobPrimeraBase(BaseModel):
 
 
 class JobPrimeraCreate(JobPrimeraBase):
-    updated_at: datetime
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
+
+    @validator("created_at", "updated_at", pre=True)
+    def default_datetime(cls, value: datetime) -> datetime:
+        return value or datetime.datetime.now(JST)
 
 
 class JobPrimeraCreateResponse(JobPrimeraCreate):
@@ -38,8 +45,8 @@ class JobPrimeraCreateResponse(JobPrimeraCreate):
 
 
 class JobPrimera(JobPrimeraBase):
-    created_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
 
     class Config:
         orm_mode = True

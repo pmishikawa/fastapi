@@ -1,4 +1,5 @@
 from sqlalchemy import Boolean, Column, Integer, String, DateTime
+from sqlalchemy.types import TIMESTAMP
 from database import Base
 from datetime import datetime, timedelta, timezone
 
@@ -9,7 +10,7 @@ class JobPrimera(Base):
     __tablename__ = "job_primera"
 
     id = Column(Integer, primary_key=True, index=True, autoincrement=True)
-    data_job = Column(DateTime)
+    data_job = Column(type_=TIMESTAMP(timezone=True))
     title = Column(String(255), default="")
     copies = Column(Integer, default=0)
     speed = Column(Integer, default=0)
@@ -29,5 +30,9 @@ class JobPrimera(Base):
     signature_cutting_bottom = Column(Integer, default=0)
     signature_edge = Column(Integer, default=0)
     signature_thickness = Column(Integer, default=0)
-    created_at = Column(DateTime, nullable=False, default=datetime.now(JST))
-    updated_at = Column(DateTime, nullable=False, default=datetime.now(JST))
+    created_at = Column(
+        type_=TIMESTAMP(timezone=True), nullable=False, default=datetime.now(JST)
+    )
+    updated_at = Column(
+        type_=TIMESTAMP(timezone=True), nullable=False, default=datetime.now(JST)
+    )

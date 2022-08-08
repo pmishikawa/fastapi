@@ -84,21 +84,28 @@ async def get_jobs(db: AsyncSession, skip: int = 0, limit: int = 100):
 async def create_job(
     db: AsyncSession, job: job_primera_schema.JobPrimeraCreate
 ) -> job_primera_model.JobPrimera:
-    print("------------------------===")
+    print("------------------------===1")
 
-    print(type(jsonable_encoder(job)))
-    print(jsonable_encoder(job))
-    job_data = {**job.dict()}
-    print("------------------------===")
-    print(type(job_data))
-    print(job_data)
-    db_job = job_primera_model.JobPrimera(**job.dict())
-    # db_job = job_primera_model.JobPrimera(jsonable_encoder(job))
-    db.add(db_job)
-    print("------------------------===")
+    job_data1 = jsonable_encoder(job)
+    print(type(job_data1))
+    print(job_data1)
+    db_job = job_primera_model.JobPrimera(**job_data1)
+    print(db_job)
+    print("------------------------===2")
+    job_data2 = job_primera_model.JobPrimera(**job.dict())
+    print(type(job_data2))
+    print(job_data2)
+
+    print("------------------------===3")
+    print(type(job))
+    print(job)
+
+    db.add(job_data2)
+    print("------------------------===4")
     await db.commit()
-    await db.refresh(job_data)
-    return job_data
+    await db.refresh(job_data2)
+    print("------------------------===5")
+    return job_data2
 
 
 async def update_job(
