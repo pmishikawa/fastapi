@@ -2,7 +2,8 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
 from env import DB_USER, DB_PASSWORD, DB_HOST, DB_NAME
 
-ASYNC_DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
+# ASYNC_DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}"
+ASYNC_DB_URL = "postgresql://sariqbxpnwnmcn:d2cb82052c3d3147ff3428a0fb2fd3f3adcb854bb0032a2a1c2233d6c35ded8b@ec2-54-208-104-27.compute-1.amazonaws.com:5432/dalglsjl1ajfht"
 # ASYNC_DB_URL = (
 #     f"mysql+aiomysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}?charset=utf8"
 # )
