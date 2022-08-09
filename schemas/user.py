@@ -1,6 +1,5 @@
-from pydantic import BaseModel, Field
-from schemas.item import Item
-from typing import Union, Optional
+from pydantic import BaseModel
+from typing import Optional
 
 
 class UserBase(BaseModel):
@@ -8,13 +7,18 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    password: str
+    hashed_password: str
+
+
+class UserCreateResponse(UserBase):
+    id: int
+
+    class Config:
+        orm_mode = True
 
 
 class User(UserBase):
-    id: Union[int, None] = None
-    is_active: Union[bool, None] = Field(None, example="True", description="フラグ")
-    items: list[Item] = []
+    id: int
 
     class Config:
         orm_mode = True

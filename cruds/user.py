@@ -1,15 +1,15 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.engine import Result
+from typing import Tuple, Optional
+import schemas.user as user_schema
+import models.user as user_model
+from lib.auth_utils import AuthJwtCsrf
 
 # from fastapi.encoders import jsonable_encoder
-from typing import List, Tuple, Optional
-import schemas.user as user_schema
-import schemas.item as item_schema
-import models.user as user_model
-import models.item as item_model
+auth = AuthJwtCsrf()
 
-
+"""
 def user_serializer(users) -> dict:
     result = []
     items = []
@@ -70,14 +70,15 @@ def user_serializer(users) -> dict:
         print(result)
 
     return result
+"""
 
-
+"""
 async def get_users(
     db: AsyncSession, skip: int = 0, limit: int = 100
 ) -> Optional[user_model.User]:
 
     # result: Result = await db.execute(select(user_model.User).offset(skip).limit(limit))
-    result: Result = await db.execute(
+    result: Ressault = await db.execute(
         select(user_model.User, item_model.Item)
         .select_from(user_model.User)
         .join(
@@ -95,71 +96,72 @@ async def get_users(
     return user_serializer(users)
 
     # return user[0] if user is not None else None
+"""
 
 
 async def get_user(db: AsyncSession, user_id: int):
     result: Result = await db.execute(
-        select(
-            user_model.User.id,
-            user_model.User.email,
-            user_model.User.is_active,
-            item_model.Item.id,
-        )
+        select(user_model.User)
         .select_from(user_model.User)
-        .outerjoin(
-            item_model.Item,
-            user_model.User.id == item_model.Item.owner_id,
-        )
         .where(user_model.User.id == user_id)
     )
 
-    # for item in result:
-    #    print(item.Item.id)
-    # 要素が一つであってもtupleで返却されるので１つ目の要素を取り出す
-
-    user: Optional[Tuple[user_model.Task]] = result.first()
-    print(user)
-    print("---------------------------112")
+    user: Optional[Tuple[user_model.User]] = result.first()
     return user[0] if user is not None else None
 
 
 async def get_user_by_email(db: AsyncSession, email: str):
 
     result: Result = await db.execute(
-        select(
-            user_model.User.id,
-        )
+        select(user_model.User)
         .select_from(user_model.User)
         .where(user_model.User.email == email)
     )
 
-    row = result.first()
-    print("---------------------------11")
-    print(row)
-    print("---------------------------22")
-    # del result
-    return row
-    # return (
-    #    await db.query(user_model.User).filter(user_model.User.email == email).filter()
-    # )
+    user: Optional[Tuple[user_model.User]] = result.first()
+    return user[0] if user is not None else None
 
 
-async def create_user(db: AsyncSession, user: user_schema.UserCreate):
-    fake_hashed_password = user.password + "notreallyhashed"
-    # user_data = jsonable_encoder(user)
+async def get_users(db: AsyncSession, skip: int = 0, limit: int = 100):
 
-    db_user = user_model.User(email=user.email, hashed_password=fake_hashed_password)
-    print("---------------------------test")
-    # print(type(user_data))
-    print(db_user.email)
-    print("---------------------------test")
+    result: Result = await db.execute(
+        select(
+            user_model.User.id,
+            user_model.User.email,
+            user_model.User.is_active,
+            user_model.User.created_at,
+            user_model.User.updated_at,
+        )
+        .offset(skip)
+        .limit(limit)
+    )
+    return result.all()
 
-    db.add(db_user)
+
+async def create_user(
+    db: AsyncSession, user: user_schema.UserCreate
+) -> user_model.User:
+
+    print("---------------------------user")
+    print(user.email)
+    print(user.hashed_password)
+    print("---------------------------user")
+
+    user = user_model.User(
+        email=user.email,
+        hashed_password=auth.generate_hashed_password(user.hashed_password),
+    )
+    print("---------------------------hashed_password")
+    print(user.hashed_password)
+    print("---------------------------hashed_password")
+
+    db.add(user)
     await db.commit()
-    await db.refresh(db_user)
-    return db_user
+    await db.refresh(user)
+    return user
 
 
+"""
 async def create_user_item(
     db: AsyncSession, item: item_schema.ItemCreate, user_id: int
 ):
@@ -180,3 +182,4 @@ async def create_user_item(
     db.commit()
     db.refresh(db_item)
     return db_item
+"""

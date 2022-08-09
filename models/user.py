@@ -1,6 +1,10 @@
 from sqlalchemy import Boolean, Column, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.types import TIMESTAMP
+from datetime import datetime, timedelta, timezone
 from database import Base
+
+
+JST = timezone(timedelta(hours=+9), "JST")
 
 
 class User(Base):
@@ -11,4 +15,9 @@ class User(Base):
     hashed_password = Column(String(255))
     is_active = Column(Boolean, default=True)
 
-    items = relationship("Item", back_populates="owner", lazy="joined")
+    created_at = Column(
+        type_=TIMESTAMP(timezone=True), nullable=False, default=datetime.now(JST)
+    )
+    updated_at = Column(
+        type_=TIMESTAMP(timezone=True), nullable=False, default=datetime.now(JST)
+    )

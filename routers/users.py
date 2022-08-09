@@ -3,13 +3,12 @@ from fastapi.encoders import jsonable_encoder
 from sqlalchemy.ext.asyncio import AsyncSession
 from database import get_db
 import schemas.user as user_schema
-import schemas.item as item_schema
 import cruds.user as user_crud
 
-router = APIRouter()
+router = APIRouter(prefix="/users", tags=["Users"])
 
 
-@router.get("/users/{user_id}", response_model=user_schema.User)
+@router.get("/{user_id}", response_model=user_schema.User)
 async def read_user(
     req: Request, res: Response, user_id: int, db: AsyncSession = Depends(get_db)
 ):
@@ -19,7 +18,7 @@ async def read_user(
     return db_user
 
 
-@router.get("/users", response_model=list[user_schema.User])
+@router.get("/", response_model=list[user_schema.User])
 async def read_users(
     skip: int = 0, limit: int = 100, db: AsyncSession = Depends(get_db)
 ):
@@ -27,7 +26,7 @@ async def read_users(
     return users
 
 
-@router.post("/users/", response_model=user_schema.User)
+@router.post("/", response_model=user_schema.User)
 async def create_user(
     req: Request,
     res: Response,
@@ -36,17 +35,15 @@ async def create_user(
 ):
     user_data = jsonable_encoder(user)
     db_user = await user_crud.get_user_by_email(db, email=user_data["email"])
-    print("<<<---------------------------1")
-    print(user.email)
+
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
-    print("<<<---------------------------2")
-    print(user)
+
     return await user_crud.create_user(db=db, user=user)
 
 
-@router.post("/users/{user_id}/items/", response_model=user_schema.Item)
-async def create_item_for_user(
-    user_id: int, item: item_schema.ItemCreate, db: AsyncSession = Depends(get_db)
-):
-    return user_crud.create_user_item(db=db, item=item, user_id=user_id)
+# @router.post("/users/{user_id}/items/", response_model=user_schema.Item)
+# async def create_item_for_user(
+#    user_id: int, item: item_schema.ItemCreate, db: AsyncSession = Depends(get_db)
+# ):
+#    return user_crud.create_user_item(db=db, item=item, user_id=user_id)
