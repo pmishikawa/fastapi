@@ -106,8 +106,8 @@ async def get_user(db: AsyncSession, user_id: int):
         .where(user_model.User.id == user_id)
     )
 
-    user: Optional[Tuple[user_model.User]] = result.first()
-    return user[0] if user is not None else None
+    user = result.first()
+    return user[0].toDict() if user is not None else None
 
 
 async def get_user_by_email(db: AsyncSession, email: str):
@@ -118,8 +118,8 @@ async def get_user_by_email(db: AsyncSession, email: str):
         .where(user_model.User.email == email)
     )
 
-    user: Optional[Tuple[user_model.User]] = result.first()
-    return user[0] if user is not None else None
+    user = result.first()
+    return user[0].toDict() if user is not None else None
 
 
 async def get_users(db: AsyncSession, skip: int = 0, limit: int = 100):
@@ -142,18 +142,10 @@ async def create_user(
     db: AsyncSession, user: user_schema.UserCreate
 ) -> user_model.User:
 
-    print("---------------------------user")
-    print(user.email)
-    print(user.hashed_password)
-    print("---------------------------user")
-
     user = user_model.User(
         email=user.email,
         hashed_password=auth.generate_hashed_password(user.hashed_password),
     )
-    print("---------------------------hashed_password")
-    print(user.hashed_password)
-    print("---------------------------hashed_password")
 
     db.add(user)
     await db.commit()

@@ -21,3 +21,11 @@ class User(Base):
     updated_at = Column(
         type_=TIMESTAMP(timezone=True), nullable=False, default=datetime.now(JST)
     )
+
+    def toDict(self):
+        return {
+            "id": self.id,
+            "email": self.email,
+            "hashed_password": self.hashed_password,
+            "is_active": self.is_active,
+        }

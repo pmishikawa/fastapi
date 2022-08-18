@@ -34,7 +34,7 @@ async def login(
     return {"message": "Successfully logged-in"}
 
 
-@router.post("/api/logout", response_model=auth_schema.SuccessMsg)
+@router.post("/logout", response_model=auth_schema.SuccessMsg)
 def logout(request: Request, response: Response, csrf_protect: CsrfProtect = Depends()):
     csrf_token = csrf_protect.get_csrf_from_headers(request.headers)
     csrf_protect.validate_csrf(csrf_token)
