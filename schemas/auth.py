@@ -30,6 +30,9 @@ class UserBody(BaseModel):
     email: str
     password: str
 
+    class Config:
+        orm_mode = True
+
 
 class UserInfo(BaseModel):
     id: Optional[str] = None
