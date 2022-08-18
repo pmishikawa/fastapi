@@ -68,8 +68,8 @@ app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(job_primera.router)
 app.include_router(job_alegro_line.router)
-# origins = ["http://localhost:3000"]
-origins = ["*"]
+origins = ["http://localhost:3000", "http://localhost:5173"]
+#origins = ["*"]
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
