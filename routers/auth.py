@@ -19,10 +19,14 @@ async def login(
     csrf_protect: CsrfProtect = Depends(),
     db: AsyncSession = Depends(get_db),
 ):
-    csrf_token = csrf_protect.get_csrf_from_headers(req.headers)
-    csrf_protect.validate_csrf(csrf_token)
-    token = await auth_crud.login(db, user)
+
     log.info("=====================1")
+    csrf_token = csrf_protect.get_csrf_from_headers(req.headers)
+    log.info("=====================2")
+    csrf_protect.validate_csrf(csrf_token)
+    log.info("=====================3")
+    token = await auth_crud.login(db, user)
+    log.info("=====================4")
     log.info(token)
     res.set_cookie(
         key="access_token",
@@ -32,7 +36,7 @@ async def login(
         secure=True,
     )
 
-    log.info("=====================2")
+    log.info("=====================5")
     log.info(res)
 
     return {"message": "Successfully logged-in"}
