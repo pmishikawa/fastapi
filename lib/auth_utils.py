@@ -16,15 +16,15 @@ class AuthJwtCsrf:
 
     def verify_password(self, plain_password: str, hashed_password: str) -> bool:
 
-        print("--verify_password--")
-        print(plain_password)
-        print(hashed_password)
+        # print("--verify_password--")
+        # print(plain_password)
+        # print(hashed_password)
         return self.pwd_ctx.verify(plain_password, hashed_password)
 
     def encode_jwt(self, email: str) -> str:
-        print("--encode_jwt--")
-        print(self.secret_key)
-        print(email)
+        # print("--encode_jwt--")
+        # print(self.secret_key)
+        # print(email)
         payload = {
             "exp": datetime.utcnow() + timedelta(days=0, minutes=5),
             "iat": datetime.utcnow(),

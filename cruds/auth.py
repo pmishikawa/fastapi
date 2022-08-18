@@ -23,22 +23,15 @@ auth = AuthJwtCsrf()
 
 async def login(db: AsyncSession, user: user_model.User) -> str:
 
-    print("------------------->1")
-    print(user.email)
-    print(user.password)
     login_user = await user_crud.get_user_by_email(db, user.email)
 
-    print("------------------->2")
-    print(login_user)
     if not login_user or not auth.verify_password(
         user.password, login_user["hashed_password"]
     ):
         raise HTTPException(status_code=401, detail="Invalid email or password")
-    print(login_user["email"])
-    print("------------------->3")
+
     token = auth.encode_jwt(login_user["email"])
-    print("------------------->4")
-    print(token)
+
     return token
 
 

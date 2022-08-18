@@ -5,7 +5,7 @@ import schemas.auth as auth_schema
 import cruds.auth as auth_crud
 from lib.auth_utils import AuthJwtCsrf
 from fastapi_csrf_protect import CsrfProtect
-import lib.log as log
+
 
 router = APIRouter(tags=["Authentication"])
 auth = AuthJwtCsrf()
@@ -19,15 +19,10 @@ async def login(
     csrf_protect: CsrfProtect = Depends(),
     db: AsyncSession = Depends(get_db),
 ):
-
-    log.info("=====================1")
     csrf_token = csrf_protect.get_csrf_from_headers(req.headers)
-    log.info("=====================2")
     csrf_protect.validate_csrf(csrf_token)
-    log.info("=====================3")
     token = await auth_crud.login(db, user)
-    log.info("=====================4")
-    log.info(token)
+
     res.set_cookie(
         key="access_token",
         value=f"Bearer {token}",
@@ -35,9 +30,6 @@ async def login(
         samesite="none",
         secure=True,
     )
-
-    log.info("=====================5")
-    log.info(res)
 
     return {"message": "Successfully logged-in"}
 
